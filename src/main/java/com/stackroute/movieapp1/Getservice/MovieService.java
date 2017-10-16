@@ -14,5 +14,7 @@ public interface MovieService {
 	  public  MovieModel add(MovieModel moviesmodel);
 	  public String  delete(String id);
 	  public  MovieModel update(MovieModel moviesmodel);
-	
+	  public MovieModel getMovie(String id);
+	  public MovieModel findById(String id);
+	  
 	 }

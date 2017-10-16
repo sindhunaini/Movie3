@@ -14,15 +14,17 @@ public class MovieModel {
 	@Id
 	@NotNull
 	private String id;
+	
+	private String username;
+	private String emailid;
+	
+	
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
-	private String username;
-	private String emailid;
-	
 	public String getEmailid() {
 		return emailid;
 	}

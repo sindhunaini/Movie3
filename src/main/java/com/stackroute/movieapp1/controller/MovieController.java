@@ -24,40 +24,63 @@ import com.stackroute.movieapp1.model.MovieModel;
 
 
 
+
+
+
 @RestController
 @RequestMapping("/v1.0/topicservice")
 public class MovieController {
 
-    @Autowired
-   private MovieService movieService;
+   @Autowired
+  private MovieService movieService;
 
-  //  @RequestMapping(method=RequestMethod.GET, value="/movies") 
-    @GetMapping("/hackathon")
-   public ResponseEntity getAllMovies( )
-   {
-    	System.out.println("hiiiii");
-    	
-      List<MovieModel> resultList1 = movieService.getAllMovie();
+ //  @RequestMapping(method=RequestMethod.GET, value="/movies")
+   @GetMapping("/hackathon")
+  public ResponseEntity getAllMovies( )
+  {
+       System.out.println("hiiiii");
        
-       return new ResponseEntity<List<MovieModel>>(resultList1, HttpStatus.OK) ;
+     List<MovieModel> resultList1 = movieService.getAllMovie();
+     
+      return new ResponseEntity<List<MovieModel>>(resultList1, HttpStatus.OK) ;
+  }
+   
+   
+   
+   
+   @RequestMapping(method=RequestMethod.GET, value="/hackathon/get/{id}", consumes="application/json")
+   public ResponseEntity<MovieModel> getMovies(@PathVariable("id") String id)
+   {
+        System.out.println("hiiiii bro");
+        
+         MovieModel resultList1 = movieService.getMovie(id);
+       
+       return new ResponseEntity<MovieModel>(resultList1, HttpStatus.OK) ;
    }
-    
-    @RequestMapping(method=RequestMethod.POST, value="/hackathon", consumes="application/json")
-   public ResponseEntity addTopic(@RequestBody MovieModel movie)
+   
+   
+  @RequestMapping(method=RequestMethod.POST, value="/hackathon", consumes="application/json")
+  public ResponseEntity addTopic(@RequestBody MovieModel movie)
+  {
+	String id = movie.getId(); 
+	  MovieModel model=movieService.findById(id);
+	  if(model==null) {
+      /*Add validation code*/        
+       movieService.add(movie);
+      return new ResponseEntity<String>("New data is created", HttpStatus.OK) ;
+        }else
+        {
+        	   return new ResponseEntity<String>("data already exists", HttpStatus.CONFLICT) ;
+        }
+  }
+   @RequestMapping(method=RequestMethod.DELETE, value="/hackathon/delete/{id}", consumes="application/json")
+   public ResponseEntity<String> delete(@PathVariable("id") String  id)
    {
        /*Add validation code*/        
-        movieService.add(movie);
-       return new ResponseEntity<String>("New data is created", HttpStatus.OK) ;
+        movieService.delete(id);
+       return new ResponseEntity<String>("Deleted succesfully", HttpStatus.OK) ;
        
    }
-    @RequestMapping(method=RequestMethod.DELETE, value="/hackathon/delete/{id}", consumes="application/json")
-    public ResponseEntity<String> delete(@PathVariable("id") String  id)
-    {
-        /*Add validation code*/        
-         movieService.delete(id);
-        return new ResponseEntity<String>("Deleted succesfully", HttpStatus.OK) ;
-        
-    }
 //    
 //    @PutMapping("/data")
 //    public @ResponseBody ResponseEntity<String> putPerson(RequestEntity<MovieModel> request) {
@@ -65,28 +88,28 @@ public class MovieController {
 //      MovieService.update(request);
 //      return new ResponseEntity<String>("Response from PUT", HttpStatus.OK);
 //    }
-  
-    @RequestMapping(method=RequestMethod.PUT, value="/hackathon/update", consumes="application/json")
-    public ResponseEntity updateTopic(@RequestBody MovieModel movie)
-    {
-        /*Add validation code*/        
-         movieService.update(movie);
-        return new ResponseEntity<String>("User updated successfully", HttpStatus.OK) ;
-        
-    }
-	
+ 
+   @RequestMapping(method=RequestMethod.PUT, value="/hackathon/update", consumes="application/json")
+   public ResponseEntity updateTopic(@RequestBody MovieModel movie)
+   {
+       /*Add validation code*/        
+        movieService.update(movie);
+       return new ResponseEntity<String>("User updated successfully", HttpStatus.OK) ;
+       
+   }
     
-    
-    
-    
-    
-    
+   
+   
+   
+   
+   
+   
 //    @RequestMapping(method=RequestMethod.PUT, value="/movies/put",consumes="application/json")
 //    public @ResponseBody ResponseEntity<String> putPerson(RequestEntity<MovieModel> request) {
 //      System.out.println("hey bro");
 //      movieService.update(request);
 //      return new ResponseEntity<String>("Response from PUT", HttpStatus.OK);
 //    }
-    
+   
 
 }

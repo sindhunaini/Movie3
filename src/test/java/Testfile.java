@@ -10,6 +10,10 @@ import org.junit.Test;
 
 import org.junit.runner.RunWith;
 
+import org.mockito.Mock;
+
+import org.mockito.MockitoAnnotations;
+
 import org.springframework.test.context.junit4.SpringRunner;
 
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -28,9 +32,13 @@ import org.springframework.http.ResponseEntity;
 
 import com.stackroute.movieapp1.MainClass;
 
+import com.stackroute.movieapp1.Getservice.MovieService;
+
 //import com.stackroute.movieapp1.model;
 
 import com.stackroute.movieapp1.model.MovieModel;
+
+import com.stackroute.movieapp1.repository.MovieRdmsRepo;
 
 @RunWith(SpringRunner.class)
 
@@ -38,157 +46,120 @@ import com.stackroute.movieapp1.model.MovieModel;
 
 public class Testfile {
 
-   String user1;
+  
 
-    @LocalServerPort
+ private MovieModel moviemodel;
 
-    private int port;
+//  String user1;
 
-    TestRestTemplate restTemplate = new TestRestTemplate();
+  @LocalServerPort
 
-    HttpHeaders headers = new HttpHeaders();
+  private int port;
 
-    MovieModel movieModel;
+  TestRestTemplate restTemplate = new TestRestTemplate();
 
-    @Before
+  HttpHeaders headers = new HttpHeaders();
 
-    public void setUp() throws Exception {
+  MovieModel movieModel;
 
-       movieModel = new MovieModel("1","Paul Dawson","tata");
+  @Before
 
-    }
+  public void setUp() throws Exception {
 
-    private String createURLWithPort(String uri) {
+    movieModel = new MovieModel("5","Paul Dawson","tata");
 
-      return "http://localhost:" + port + uri;
+  }
 
-    }
+  private String createURLWithPort(String uri) {
 
-    @After
+   return "http://localhost:" + port + uri;
 
-    public void tearDown() throws Exception {
+  }
 
-    }
+  @After
 
-    @Test
+  public void tearDown() throws Exception {
 
-    public void Testcreate() throws Exception {
+  }
+
+  @Test
+
+  public void Testcreate() throws Exception {
+
+   HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
+
+   ResponseEntity<String> response = restTemplate.exchange(
+
+     createURLWithPort("/v1.0/topicservice/hackathon"),
+
+     HttpMethod.POST, entity, String.class);
+
+   assertNotNull(response);
+
+   String actual = response.getBody();
+
+   System.out.println(actual);
+
+   assertEquals("data already exists",actual);
+
+  
+
+  }
+
+  @Test
+
+  public void testSaveUser() throws Exception {
+
+    HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
+
+    ResponseEntity<String> response = restTemplate.exchange(
+
+        createURLWithPort("/v1.0/topicservice/hackathon/update"),
+
+        HttpMethod.PUT, entity, String.class);
+
+    assertNotNull(response);
+
+    String set = response.getBody();
+
+    System.out.println(set);
+
+    assertEquals("User updated successfully",set);
+
+  }
+
+  @Test
+
+  public void testdelete() throws Exception {
+
+    HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
+
+    ResponseEntity<String> response = restTemplate.exchange(
+
+        createURLWithPort("/v1.0/topicservice//hackathon/delete/2"),
+
+        HttpMethod.DELETE, entity, String.class);
+
+    assertNotNull(response);
+
+    String actual = response.getBody();
+
+    System.out.println(actual);
+
+    assertEquals("Deleted succesfully",actual);
+  }
+  @Test
+  public void testupdate() throws Exception {
 
       HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
-
       ResponseEntity<String> response = restTemplate.exchange(
-
-          createURLWithPort("/v1.0/topicservice/hackathon"),
-
-          HttpMethod.POST, entity, String.class);
-
+              createURLWithPort("/v1.0/topicservice/hackathon/update"),
+              HttpMethod.PUT, entity, String.class);
       assertNotNull(response);
-
       String actual = response.getBody();
-
       System.out.println(actual);
+      assertEquals("User updated successfully",actual);
+  }  
+  }  
 
-      assertEquals("New data is created",actual);
-
-    
-    }
-    @Test
-    public void testSaveUser() throws Exception {
-
-        HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
-                createURLWithPort("/v1.0/topicservice/hackathon/update"),
-                HttpMethod.PUT, entity, String.class);
-        assertNotNull(response);
-        String set = response.getBody();
-        System.out.println(set);
-        assertEquals("User updated successfully",set);
-    }
-    @Test
-    public void testdelete() throws Exception {
-
-        HttpEntity<MovieModel> entity = new HttpEntity<MovieModel>(movieModel, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
-                createURLWithPort("/v1.0/topicservice//hackathon/delete/2"),
-                HttpMethod.DELETE, entity, String.class);
-        assertNotNull(response);
-        String actual = response.getBody();
-        System.out.println(actual);
-        assertEquals("Deleted succesfully",actual);
-    }   
-}
-           
-    
-
-   /* 
-
-    @Test
-
-    public void testread() throws Exception {
-
-      HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-
-      ResponseEntity<String> response = restTemplate.exchange(
-
-          createURLWithPort("/v0.1/MovieService/Movies"),
-
-          HttpMethod.GET, entity, String.class);
-
-      assertNotNull(response);
-
-    }
-
-    
-
-    @Test
-
-    public void testAddRestaurant() throws Exception {
-
-      HttpEntity<Restaurant> entity = new HttpEntity<Restaurant>(restaurant, headers);
-
-      ResponseEntity<String> response = restTemplate.exchange(
-
-          createURLWithPort("v1.0/restaurantservice/restaurant"),
-
-          HttpMethod.POST, entity, String.class);
-
-      assertNotNull(response);
-
-      String actual = response.getBody();
-
-      System.out.println(actual);
-
-      assertEquals("Done",actual);
-
-    }
-
-    @Test
-
-    public void read() throws Exception {
-
-      HttpEntity<String> entity = new HttpEntity<String>(null, headers);
-
-      ResponseEntity<String> response = restTemplate.exchange(
-
-          createURLWithPort("/user/list"),
-
-          HttpMethod.GET, entity, String.class);
-
-      assertNotNull(response);
-
-    }
-
-    @Test
-
-    public void update() throws Exception {
-
-    }
-
-    @Test
-
-    public void delete() throws Exception {
-
-    }
-    
-    
-    */
+ 
